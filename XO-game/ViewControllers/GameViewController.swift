@@ -20,6 +20,7 @@ class GameViewController: UIViewController {
     
     // MARK: - Properties
     
+    var gameType: GameType = .pvp
     private let gameboard = Gameboard()
     private var currentState: GameState! {
         didSet {
@@ -36,9 +37,11 @@ class GameViewController: UIViewController {
         
         gameboardView.onSelectPosition = { [weak self] position in
             guard let self else { return }
-            self.currentState.addMark(at: position)
-            if self.currentState.isCompleted {
-                self.goToNextState()
+            if self.currentState is PlayerInputState {
+                self.currentState.addMark(at: position)
+                if self.currentState.isCompleted {
+                    self.goToNextState()
+                }
             }
         }
     }
@@ -51,13 +54,25 @@ class GameViewController: UIViewController {
     
     // MARK: - Functions
     
+    public func next() {
+        if currentState is ComputerState {
+            goToNextState()
+        }
+    }
+    
     private func goToFirstState() {
-        let player = Player.first
+        let player: Player
+        switch gameType {
+        case .pvp:
+            player = Player.first
+        case .pve:
+            player = Player.player
+        }
         currentState = PlayerInputState(player: player,
-                                        markViewPrototype: player.markViewPrototype,
-                                        gameViewController: self,
-                                        gameboard: gameboard,
-                                        gameboardView: gameboardView)
+                                            markViewPrototype: player.markViewPrototype,
+                                            gameViewController: self,
+                                            gameboard: gameboard,
+                                            gameboardView: gameboardView)
     }
     
     private func goToNextState() {
@@ -68,6 +83,25 @@ class GameViewController: UIViewController {
         
         if let playerInputState = currentState as? PlayerInputState {
             let player = playerInputState.player.next
+            switch gameType {
+            case .pvp:
+                currentState = PlayerInputState(player: player,
+                                                markViewPrototype: player.markViewPrototype,
+                                                gameViewController: self,
+                                                gameboard: gameboard,
+                                                gameboardView: gameboardView)
+            case .pve:
+                currentState = ComputerState(player: player,
+                                             markViewPrototype: player.markViewPrototype,
+                                             gameViewController: self,
+                                             gameboard: gameboard,
+                                             gameboardView: gameboardView)
+            }
+            return
+        }
+        
+        if let computerState = currentState as? ComputerState {
+            let player = computerState.player.next
             currentState = PlayerInputState(player: player,
                                             markViewPrototype: player.markViewPrototype,
                                             gameViewController: self,

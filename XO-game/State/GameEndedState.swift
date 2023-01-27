@@ -42,6 +42,10 @@ public class GameEndedState: GameState {
             return "1st player"
         case .second:
             return "2nd player"
+        case .player:
+            return "Player"
+        case .computer:
+            return "Computer"
         }
     }
     

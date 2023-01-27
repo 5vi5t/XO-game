@@ -8,11 +8,18 @@
 
 import Foundation
 
-public final class Gameboard {
+public final class Gameboard: Copying {
     
     // MARK: - Properties
     
     private lazy var positions: [[Player?]] = initialPositions()
+    
+    // MARK: - Construction
+    
+    convenience init(_ prototype: Gameboard) {
+        self.init()
+        self.positions = prototype.positions
+    }
     
     // MARK: - public
     
