@@ -11,19 +11,23 @@ import Foundation
 public enum Player: CaseIterable {
     case first
     case second
+    case player
+    case computer
     
     var next: Player {
         switch self {
         case .first: return .second
         case .second: return .first
+        case .player: return .computer
+        case .computer: return .player
         }
     }
     
     var markViewPrototype: MarkView {
         switch self {
-        case .first:
+        case .first, .player:
             return XView()
-        case .second:
+        case .second, .computer:
             return OView()
         }
     }

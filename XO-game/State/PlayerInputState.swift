@@ -44,6 +44,12 @@ public class PlayerInputState: GameState {
         case .second:
             gameViewController?.firstPlayerTurnLabel.isHidden = true
             gameViewController?.secondPlayerTurnLabel.isHidden = false
+        case .player:
+            gameViewController?.firstPlayerTurnLabel.isHidden = false
+            gameViewController?.secondPlayerTurnLabel.isHidden = true
+            gameViewController?.firstPlayerTurnLabel.text = "Player"
+        default:
+            break
         }
         gameViewController?.winnerLabel.isHidden = true
     }
@@ -58,6 +64,4 @@ public class PlayerInputState: GameState {
         gameboardView.placeMarkView(markViewPrototype.copy(), at: position)
         isCompleted = true
     }
-    
-    
 }
